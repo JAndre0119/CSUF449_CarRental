@@ -20,27 +20,52 @@
     </header>
 
     <main>
-        <section class="hero">
-            <h2>Find Your Perfect Ride</h2>
-            <p>Affordable and reliable rentals at your fingertips.</p>
-            <a href="/cars" class="btn">Book Now</a>
-        </section>
+    <section class="hero">
+        <h2>Find Your Perfect Ride</h2>
+        <p>Affordable and reliable rentals at your fingertips.</p>
+        <a href="/cars" class="btn">Book Now</a>
+    </section>
 
-        <section class="features">
-            <div class="feature">
-                <h3>Wide Selection</h3>
-                <p>Choose from sedans, SUVs, trucks, and luxury cars.</p>
+    <section class="features">
+        <div class="feature">
+            <h3>Wide Selection</h3>
+            <p>Choose from sedans, SUVs, trucks, and luxury cars.</p>
+        </div>
+        <div class="feature">
+            <h3>Affordable Rates</h3>
+            <p>Competitive pricing with no hidden fees.</p>
+        </div>
+        <div class="feature">
+            <h3>24/7 Support</h3>
+            <p>We’re here whenever you need us.</p>
+        </div>
+    </section>
+
+    <!-- 🚗 Car showcase section -->
+    <section class="car-showcase">
+        <h2>Popular Cars</h2>
+        <div class="car-list">
+            <div class="lucary">
+                <img src="https://static.cargurus.com/images/forsale/2025/08/17/04/45/2019_lamborghini_huracan-pic-1149500202679094979-1024x768.jpeg" alt="Sedan">
+                <h3>sports car for 300 a day</h3>
+                <p>Perfect for city fun.</p>
+                <a href="/cars/sedan" class="btn">Rent Now</a>
             </div>
-            <div class="feature">
-                <h3>Affordable Rates</h3>
-                <p>Competitive pricing with no hidden fees.</p>
+            <div class="car-card">
+                <img src="" alt="SUV">
+                <h3>Family SUV</h3>
+                <p>Spacious, safe, and reliable for road trips.</p>
+                <a href="/cars/suv" class="btn">Rent Now</a>
             </div>
-            <div class="feature">
-                <h3>24/7 Support</h3>
-                <p>We’re here whenever you need us.</p>
+            <div class="car-card">
+                <img src="{{ url_for('static', filename='images/luxury.jpg') }}" alt="Luxury Car">
+                <h3>Luxury Car</h3>
+                <p>Drive in style with our premium selection.</p>
+                <a href="/cars/luxury" class="btn">Rent Now</a>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 
     <footer>
         <p>&copy; 2025 EasyCar Rentals. All rights reserved.</p>

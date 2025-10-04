@@ -6,6 +6,7 @@ body {
     color: #333;
 }
 
+/* Header */
 header {
     background: #003366;
     color: white;
@@ -22,6 +23,8 @@ header ul {
     list-style: none;
     display: flex;
     gap: 1rem;
+    margin: 0;
+    padding: 0;
 }
 
 header a {
@@ -29,6 +32,7 @@ header a {
     text-decoration: none;
 }
 
+/* Hero Section */
 .hero {
     text-align: center;
     padding: 4rem 2rem;
@@ -44,12 +48,16 @@ header a {
     text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
+    margin-top: 1rem;
 }
 
+/* Features Section */
 .features {
     display: flex;
     justify-content: space-around;
     padding: 2rem;
+    flex-wrap: wrap; /* responsive for smaller screens */
+    gap: 1rem;
 }
 
 .feature {
@@ -59,4 +67,59 @@ header a {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     width: 30%;
     text-align: center;
+    min-width: 220px;
+}
+
+/* Car Showcase Section */
+.car-showcase {
+    padding: 2rem;
+    background: #f9f9f9;
+    text-align: center;
+}
+
+.car-list {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.car-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 250px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.car-card:hover {
+    transform: scale(1.05);
+}
+
+.car-card img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.car-card h3 {
+    margin: 0.5rem 0;
+}
+
+/* Reusable Button */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #0056b3;
 }
