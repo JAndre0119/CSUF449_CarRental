@@ -46,8 +46,6 @@ CSUF449_CarRental/
 ├── requirements.txt # Project dependencies
 └── README.md # Project documentation
 
-yaml
-Copy code
 
 ---
 
