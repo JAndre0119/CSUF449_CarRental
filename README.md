@@ -52,9 +52,9 @@ CSUF449_CarRental/
 ## Installation
 
 1. Clone the repository:
-bash
-git clone https://github.com/JAndre0119/CSUF449_CarRental.git
-cd CSUF449_CarRental
+- bash
+- git clone https://github.com/JAndre0119/CSUF449_CarRental.git
+- cd CSUF449_CarRental
 
 2. Create a virtual environment:
 bash
