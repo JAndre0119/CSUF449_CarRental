@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Book a Car{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center mb-4 fw-bold">Book a Car</h1>
+
+  {% if cars %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="POST" action="{{ url_for('views.book') }}">
+        <!-- Car selection -->
+        <div class="mb-3">
+          <label for="car" class="form-label">Select Car</label>
+          <select id="car" name="car_name" class="form-select" required>
+            {% for car in cars %}
+            <option value="{{ car.name }}" {% if car.name == car_type %}selected{% endif %}>
+              {{ car.name }} ({{ car.make }} {{ car.model }}, {{ car.year }})
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Rental days -->
+        <div class="mb-3">
+          <label for="start_date" class="form-label">Start Date</label>
+          <input type="date" name="start_date" id="start_date" class="form-control" required>
+        </div>
+          <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" name="end_date" id="end_date" class="form-control" required>
+        </div>
+
+
+        <!-- Submit -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary w-50">Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-warning text-center">
+    No cars available to book at the moment.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
