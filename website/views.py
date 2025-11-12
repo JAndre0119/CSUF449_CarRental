@@ -76,3 +76,54 @@ def book():
 
     # GET: render the form
     return render_template("book.html", car_type=car_type, cars=cars)
+
+@views.route('/browse')
+def browse():
+    cars = Car.query.order_by(Car.name).all()
+    return render_template("browse.html", cars=cars)
+
+@views.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        make = request.form.get('make', '').strip()
+        model = request.form.get('model', '').strip()
+        year = request.form.get('year', '').strip()
+        price_per_day = request.form.get('price_per_day', '').strip()
+        total_quantity = request.form.get('total_quantity', '').strip()
+        image_filename = request.form.get('image_filename', '').strip()
+
+        if not name:
+            flash("Car name is required.", "error")
+        else:
+            new_car = Car(
+                name=name,
+                make=make,
+                model=model,
+                year=int(year) if year else None,
+                price_per_day=float(price_per_day) if price_per_day else 0.0,
+                total_quantity=int(total_quantity) if total_quantity else 1,
+                image_filename=image_filename or "default.jpg"
+            )
+            db.session.add(new_car)
+            db.session.commit()
+            flash(f"Car '{name}' added successfully!", "success")
+        return redirect(url_for('views.admin'))
+
+    cars = Car.query.order_by(Car.name).all()
+    return render_template("admin.html", cars=cars)
+
+@views.route('/delete_car/<int:car_id>', methods=['POST'])
+def delete_car(car_id):
+    car = Car.query.get_or_404(car_id)
+    try:
+        db.session.delete(car)
+        db.session.commit()
+        flash(f"Car '{car.name}' deleted successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash("Error deleting car: " + str(e), "error")
+    return redirect(url_for('views.admin'))
+
+
+

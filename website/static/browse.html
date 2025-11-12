@@ -1,50 +1,23 @@
-# having issues connecting browser button to the page unsure of wha to do but working on it
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Cars</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <nav>
-            <h1>Car Rental</h1>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="browse.html" class="active">Browse Cars</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <!-- Car Browse Section -->
-    <section class="car-showcase">
-        <h2>Available Cars</h2>
-        <div class="car-list">
-            <div class="car-card">
-                <img src="images/car1.jpg" alt="Sedan">
-                <h3>2022 Toyota Camry</h3>
-                <p>$60/day</p>
-                <a href="#" class="btn">Rent Now</a>
-            </div>
-
-            <div class="car-card">
-                <img src="images/car2.jpg" alt="SUV">
-                <h3>2023 Honda CR-V</h3>
-                <p>$75/day</p>
-                <a href="#" class="btn">Rent Now</a>
-            </div>
-
-            <div class="car-card">
-                <img src="images/car3.jpg" alt="Convertible">
-                <h3>2021 BMW Z4</h3>
-                <p>$120/day</p>
-                <a href="#" class="btn">Rent Now</a>
-            </div>
-        </div>
-    </section>
-</body>
-</html>
+<div class="browse-container">
+  <h2>Available Cars</h2>
+  <div class="car-grid">
+    {% for car in cars %}
+    <div class="car-card">
+      <img src="{{ url_for('static', filename='images/' + car.image_filename) }}" 
+           alt="{{ car.name }}" class="car-img">
+      <h3>{{ car.name }}</h3>
+      <p>{{ car.make }} {{ car.model }} ({{ car.year }})</p>
+      <p><strong>${{ "%.2f"|format(car.price_per_day) }}</strong> / day</p>
+      <p class="availability">
+        Available: {{ car.total_quantity }} / {{ car.total_quantity }}
+      </p>
+      <a href="{{ url_for('views.book', car_type=car.name) }}" class="book-btn">Book Now</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

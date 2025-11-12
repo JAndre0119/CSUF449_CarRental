@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<div class="admin-container">
+  <h2>Admin Dashboard</h2>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Add Car Form -->
+  <form action="{{ url_for('views.admin') }}" method="POST" enctype="multipart/form-data" class="car-form">
+    <h3>Add a New Car</h3>
+    <div class="form-grid">
+      <input type="text" name="name" placeholder="Car Name (e.g., SUV)" required>
+      <input type="text" name="make" placeholder="Make (e.g., Toyota)">
+      <input type="text" name="model" placeholder="Model (e.g., RAV4)">
+      <input type="number" name="year" placeholder="Year">
+      <input type="number" step="0.01" name="price_per_day" placeholder="Price per Day">
+      <input type="number" name="total_quantity" placeholder="Quantity" required>
+      <input type="text" name="image_filename" placeholder="Image Filename (optional)">
+    </div>
+    <button type="submit" class="btn-primary">Add Car</button>
+  </form>
+
+  <!-- Car Listing -->
+  <h3 class="section-title">Existing Cars</h3>
+  <div class="car-grid">
+    {% for car in cars %}
+    <div class="car-card">
+      <img src="{{ url_for('static', filename='images/' + (car.image_filename or 'default.jpg')) }}" 
+           alt="{{ car.name }}" class="car-img">
+      <h3>{{ car.name }}</h3>
+      <p>{{ car.make }} {{ car.model }} ({{ car.year or 'N/A' }})</p>
+      <p><strong>${{ "%.2f"|format(car.price_per_day) }}</strong> / day</p>
+      <p>Qty: {{ car.total_quantity }}</p>
+
+      <!-- Delete Car Button -->
+      <form action="{{ url_for('views.delete_car', car_id=car.id) }}" method="POST"
+            onsubmit="return confirm('Are you sure you want to delete {{ car.name }}?');">
+        <button type="submit" class="delete-btn">Delete</button>
+      </form>
+    </div>
+    {% else %}
+    <p>No cars yet. Add some above!</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
