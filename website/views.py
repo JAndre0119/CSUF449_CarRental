@@ -10,6 +10,8 @@ def home():
     # Query cars to show availability summary
     cars = Car.query.order_by(Car.name).all()
     return render_template("home.html", cars=cars)
+#the contact page connects to homepage and to the file contact.html
+@views.route('/contact')
 
 @views.route('/book', methods=['GET', 'POST'])
 def book():
