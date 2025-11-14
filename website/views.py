@@ -13,7 +13,7 @@ def home():
 #the contact page connects to homepage and to the file contact.html
 @views.route('/contact')
 def contact():
-    return render_template('contact')
+    return render_template('contact.html')
 
 @views.route('/book', methods=['GET', 'POST'])
 def book():
