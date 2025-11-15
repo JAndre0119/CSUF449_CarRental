@@ -1,51 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Cars</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Navigation bar links to other pages -->
-    <!-- Header -->
-    <header>
-        <nav>
-            <h1>Car Rental</h1>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="browse.html" class="active">Browse Cars</a></li>
-                <!-- Clicking this will open the separate Contact page -->
-                <li><a href="contact.html"  class="active">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <!-- Car Browse Section -->
-    <section class="car-showcase">
-        <h2>Available Cars</h2>
-        <div class="car-list">
-            <div class="car-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/88/2018_Toyota_Camry_XSE_front_4.22.18.jpg" alt="2022 Toyota Camry">
-                <h3>2022 Toyota Camry</h3>
-                <p>$60/day</p>
-                <a href="#" class="btn">Rent Now</a>
-            </div>
-
-            <div class="car-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/2018_Honda_CR-V_EX_AWD_front_6.4.18.jpg" alt="2023 Honda CR-V">
-                <h3>2023 Honda CR-V</h3>
-                <p>$75/day</p>
-                <a href="#" class="btn">Rent Now</a>
-            </div>
-
-            <div class="car-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/2019_BMW_Z4_M40i_3.0_Front.jpg" alt="2021 BMW Z4">
-                <h3>2021 BMW Z4</h3>
-                <p>$120/day</p>
-                <a href="#" class="btn">Rent Now</a>
-            </div>
-        </div>
-    </section>
-</body>
-</html>
+<div class="browse-container">
+  <h2>Available Cars</h2>
+  <div class="car-grid">
+    {% for car in cars %}
+    <div class="car-card">
+      <img src="{{ url_for('static', filename='images/' + car.image_filename) }}" 
+           alt="{{ car.name }}" class="car-img">
+      <h3>{{ car.name }}</h3>
+      <p>{{ car.make }} {{ car.model }} ({{ car.year }})</p>
+      <p><strong>${{ "%.2f"|format(car.price_per_day) }}</strong> / day</p>
+      <p class="availability">
+        Available: {{ car.total_quantity }} / {{ car.total_quantity }}
+      </p>
+      <a href="{{ url_for('views.book', car_type=car.name) }}" class="book-btn">Book Now</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
