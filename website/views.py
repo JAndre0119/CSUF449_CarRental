@@ -11,8 +11,42 @@ def home():
     cars = Car.query.order_by(Car.name).all()
     return render_template("home.html", cars=cars)
 #the contact page connects to homepage and to the file contact.html
-@views.route('/contact')
+from flask_mail import Message
+from . import mail
+
+#what sends the informaton about the contact me page
+#it sends it to my email and sends aconfirmation email to user.
+@views.route('/contact', methods=['GET', 'POST'])
+
 def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+
+        message_content = request.form.get('message')
+
+        msg = Message(
+            subject=f"New Contact Form Submission from {name}",
+            sender="Rafaelmercadoespinoza@gmail.com",
+
+            recipients=[email]
+        )
+
+        msg.body = f"""
+You received a new contact request:
+
+Name: {name}
+Email: {email}
+
+Message:
+{message_content}
+"""
+
+        mail.send(msg)
+
+        flash("Your message has been sent successfully!", "success")
+        return redirect(url_for('views.contact'))
+
     return render_template('contact.html')
 
 @views.route('/book', methods=['GET', 'POST'])

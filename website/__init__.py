@@ -18,7 +18,7 @@ def create_app():
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USERNAME'] = 'Rafaelmercadoespinoza@gmail.com'
-    app.config['MAIL_PASSWORD'] = '554420938'  # replace with real Gmail App Password
+    app.config['MAIL_PASSWORD'] = 'bqyh mqmd tdsq bnya'  # replace with real Gmail App Password
 
     db.init_app(app)
     mail.init_app(app)
