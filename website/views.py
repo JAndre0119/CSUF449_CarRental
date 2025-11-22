@@ -16,8 +16,22 @@ from . import mail
 
 #what sends the informaton about the contact me page
 #it sends it to my email and sends aconfirmation email to user.
-@views.route('/contact', methods=['GET', 'POST'])
 
+@views.route("/checkout", methods=["POST"])
+def checkout():
+    car_name = request.form.get("car_name")
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    return render_template(
+        "checkout.html",
+        car_name=car_name,
+        start_date=start_date,
+        end_date=end_date
+    )
+
+@views.route('/contact', methods=['GET', 'POST'])
+# for the check out page/ cart
 def contact():
     if request.method == 'POST':
         name = request.form.get('name')

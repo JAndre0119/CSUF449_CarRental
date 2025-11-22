@@ -12,7 +12,7 @@
         <!-- Car selection -->
         <div class="mb-3">
           <label for="car" class="form-label">Select Car</label>
-          <select id="car" name="car_name" class="form-select" required>
+          <select id="car" name="car_type" class="form-select" required>
             {% for car in cars %}
             <option value="{{ car.name }}" {% if car.name == car_type %}selected{% endif %}>
               {{ car.name }} ({{ car.make }} {{ car.model }}, {{ car.year }})
@@ -31,10 +31,14 @@
             <input type="date" name="end_date" id="end_date" class="form-control" required>
         </div>
 
+        <div class="text-center d-flex justify-content-center gap-3">
+          <button type="submit" formaction="{{ url_for('views.book') }}" class="btn btn-primary w-50">
+            Confirm Booking
+          </button>
 
-        <!-- Submit -->
-        <div class="text-center">
-          <button type="submit" class="btn btn-primary w-50">Confirm Booking</button>
+          <button type="submit" formaction="{{ url_for('views.checkout') }}" class="btn btn-success w-50">
+            Continue to Checkout
+          </button>
         </div>
       </form>
     </div>
