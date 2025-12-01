@@ -19,7 +19,7 @@ from . import mail
 
 @views.route("/checkout", methods=["POST"])
 def checkout():
-    car_name = request.form.get("car_name")
+    car_name = request.form.get("car_type")
     start_date = request.form.get("start_date")
     end_date = request.form.get("end_date")
 
@@ -51,6 +51,7 @@ You received a new contact request:
 
 Name: {name}
 Email: {email}
+
 
 Message:
 {message_content}
