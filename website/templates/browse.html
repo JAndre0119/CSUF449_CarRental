@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Browse Cars{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Browse Our Cars</h1>
+
+    <div class="row">
+        {% for car in cars %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+
+                <img src="{{ url_for('static', filename='images/' ~ car.image_filename) }}"
+                     class="card-img-top"
+                     alt="{{ car.name }}"
+                     style="height: 220px; object-fit: cover;">
+
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ car.name }}</h5>
+                    <p class="card-text">
+                        {{ car.year }} {{ car.make }} {{ car.model }}
+                    </p>
+                    <p class="fw-bold">${{ car.price_per_day }} / day</p>
+
+                    <a href="{{ url_for('views.book', car_type=car.name) }}" class="btn btn-primary">
+                        Book Now
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

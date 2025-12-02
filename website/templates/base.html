@@ -34,9 +34,9 @@
             color: #fff !important;
         }
 
-            .nav-link:hover {
-                color: #d1e3ff !important;
-            }
+        .nav-link:hover {
+            color: #d1e3ff !important;
+        }
     </style>
 </head>
 <body>
@@ -51,21 +51,27 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('views.home') }}">Home</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.browse') }}">Browse Cars</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('views.book') }}">Book a Car</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('views.contact') }}">Contact Us</a>
                     </li>
+
                 </ul>
             </div>
         </div>
     </nav>
-
-
 
     <!-- Main Content -->
     <main class="flex-grow-1 py-4">
