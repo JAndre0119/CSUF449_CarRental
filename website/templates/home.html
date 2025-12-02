@@ -1,67 +1,64 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
-
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <section class="hero">
-        <h2>Find Your Perfect Ride</h2>
-        <p>Affordable and reliable rentals at your fingertips.</p>
-        <a href="{{ url_for('views.book', ) }}" class="btn">Book Now</a>
-    </section>
 
-    <section class="features">
-        <div class="feature">
-            <h3>Wide Selection</h3>
-            <p>Choose from sedans, SUVs, trucks, and luxury cars.</p>
-        </div>
-        <div class="feature">
-            <h3>Affordable Rates</h3>
-            <p>Competitive pricing with no hidden fees.</p>
-        </div>
-        <div class="feature">
-            <h3>24/7 Support</h3>
-            <p>We’re here whenever you need us.</p>
-        </div>
-    </section>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4 fw-bold">Available Cars</h1>
+<!-- Hero Section -->
+<div class="hero-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #4e73df, #1cc88a); color: white;">
+    <h1 class="display-4 fw-bold">Find Your Perfect Ride</h1>
+    <p class="lead">Choose from a variety of modern, clean, and affordable vehicles.</p>
+</div>
 
-        {% if cars %}
-        <div class="row justify-content-center">
-            {% for car in cars %}
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100 border-0">
-                    <img src="{{ url_for('static', filename='images/' + car.image_filename) }}"
-                         class="card-img-top"
-                         alt="{{ car.name }}"
-                         style="height: 220px; object-fit: cover;"
-                         onerror="this.src='{{ url_for('static', filename='images/placeholder.jpg') }}';">
+<div class="container">
 
-                    <div class="card-body text-center">
-                        <h5 class="card-title fw-semibold">{{ car.name }}</h5>
-                        <p class="card-text text-muted mb-1">{{ car.make }} {{ car.model }} ({{ car.year }})</p>
-                        <p class="card-text mb-2">
-                            <strong>${{ "%.2f"|format(car.price_per_day) }}</strong> / day
-                        </p>
+    <!-- Section Header -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Available Cars</h2>
+        <hr class="mx-auto" style="width: 120px; border: 2px solid #4e73df;">
+    </div>
 
-                        {% if car.total_quantity > 0 %}
-                        <a href="{{ url_for('views.book', car_type=car.name) }}" class="btn btn-primary w-75">
-                            Book Now
-                        </a>
-                        {% else %}
-                        <button class="btn btn-secondary w-75" disabled>Sold Out</button>
-                        {% endif %}
-                    </div>
+    <div class="row g-4">
 
+        {% for car in cars %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card shadow-lg border-0 rounded-4 car-card" style="transition: 0.25s;">
+                
+                <!-- Image Box (fixed height, modern) -->
+                <div style="height: 200px; overflow: hidden; border-radius: 12px 12px 0 0;">
+                    <img 
+                        src="{{ url_for('static', filename='images/' ~ (car.image_filename or 'placeholder.jpg')) }}"
+                        alt="Car image"
+                        class="w-100 h-100"
+                        style="object-fit: cover;"
+                        onerror="this.src='{{ url_for('static', filename='images/placeholder.jpg') }}';"
+                    >
+                </div>
 
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ car.name }}</h5>
+
+                    <p class="card-text mb-3">
+                        <strong>Make:</strong> {{ car.make }}<br>
+                        <strong>Model:</strong> {{ car.model }}<br>
+                        <strong>Year:</strong> {{ car.year }}<br>
+                        <strong>Price/Day:</strong> ${{ car.price_per_day }}
+                    </p>
+
+                    <a href="{{ url_for('views.book', car_type=car.name) }}" class="btn btn-primary w-100 rounded-pill">
+                        Book Now
+                    </a>
                 </div>
             </div>
-            {% endfor %}
         </div>
-        {% else %}
-        <div class="alert alert-warning text-center">
-            No cars available at the moment. Please check back later.
-        </div>
-        {% endif %}
+        {% endfor %}
+
     </div>
-    {% endblock %}
+</div>
+
+<!-- Hover animation -->
+<style>
+    .car-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+</style>
+
+{% endblock %}
