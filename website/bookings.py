@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from . import db
 from .models import Booking, Car, User
 from datetime import datetime
@@ -16,9 +16,9 @@ def book_car(car_id):
         start_date = datetime.strptime(request.form["start_date"], "%Y-%m-%d").date()
         end_date = datetime.strptime(request.form["end_date"], "%Y-%m-%d").date()
 
-        if end_date < start_date:
-            flash("End date must be after start date.", "error")
-            return redirect(url_for("bookings.book_car", car_id=car_id))
+        #if end_date < start_date:
+        #    flash("End date must be after start date.", "error")
+        #    return redirect(url_for("bookings.book_car", car_id=car_id))
 
         # Calculate total price
         days = (end_date - start_date).days + 1
@@ -35,8 +35,21 @@ def book_car(car_id):
         db.session.add(booking)
         db.session.commit()
 
+        # Save checkout info to session so the checkout page can use it
+        session['checkout'] = {
+            'car_name': f"{car.make} {car.model}",
+            'start_date': start_date.strftime("%Y-%m-%d"),
+            'end_date': end_date.strftime("%Y-%m-%d"),
+            'total_price': total_price
+        }
+
         flash(f"Booking confirmed for {car.make} {car.model}!", "success")
-        return redirect(url_for("views.home"))
+        return redirect(url_for("views.checkoutpage"))
 
     return render_template("book.html", car=car)
 
+# Fallback route: catches bad POST requests to /book without a car_id
+@bookings_bp.route("/book", methods=["POST"])
+def book_car_fallback():
+    flash("Booking error: Missing car ID. Please select a car again.", "error")
+    return redirect(url_for("views.home"))

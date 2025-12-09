@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from . import db
 from .models import Car, Booking
 from datetime import datetime
 
 views = Blueprint('views', __name__)
+
+
 
 @views.route('/')
 def home():
@@ -57,63 +59,118 @@ def book():
     # We want a list of car names for the form
     cars = Car.query.order_by(Car.name).all()
 
+    # GET: render the form
+    return render_template("book.html", car_type=car_type, cars=cars)
+
+
+# New route for /book/<int:car_id>
+@views.route('/book/<int:car_id>', methods=['GET', 'POST'])
+def book_with_id(car_id):
+    # Get the selected car by ID
+    car = Car.query.get_or_404(car_id)
+
+    # Still load all cars for the dropdown
+    cars = Car.query.order_by(Car.name).all()
+    car_type = car.name
+
     if request.method == 'POST':
         # Collect form data
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip()
-        car_type = request.form.get('car_type', '')
         start_date_str = request.form.get('start_date', '')
         end_date_str = request.form.get('end_date', '')
 
         # Validate
-        if not (name and email and car_type and start_date_str and end_date_str):
-            flash("Please fill out all fields.", "error")
-            return redirect(url_for('views.book', car_type=car_type))
+        if not (start_date_str and end_date_str):
+            flash("Please select both start and end dates.", "error")
+            return redirect(url_for('views.checkout', car_id=car_id))
 
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
         except ValueError:
             flash("Invalid date format.", "error")
-            return redirect(url_for('views.book', car_type=car_type))
+            return redirect(url_for('views.checkout', car_id=car_id))
 
         if end_date < start_date:
             flash("End date must be the same or after start date.", "error")
-            return redirect(url_for('views.book', car_type=car_type))
+            return redirect(url_for('views.checkout', car_id=car_id))
 
-        # Find matching car types (one or more rows can share same name)
-        car = Car.query.filter_by(name=car_type).first()
-        if not car:
-            flash("Selected car type does not exist.", "error")
-            return redirect(url_for('views.book'))
-
-        # Count overlapping bookings for that car type (overlap if start <= existing.end and end >= existing.start)
+        # Count overlapping bookings for this specific car
         overlapping_count = Booking.query.filter(
-            Booking.car_type == car_type,
+            Booking.car_id == car.id,
             Booking.start_date <= end_date,
             Booking.end_date >= start_date
         ).count()
 
         if overlapping_count >= car.total_quantity:
-            flash(f"Sorry — {car_type} is not available for the selected dates.", "error")
-            return redirect(url_for('views.book', car_type=car_type))
+            flash(f"Sorry — {car.name} is not available for the selected dates.", "error")
+            return redirect(url_for('views.checkout', car_id=car_id))
 
-        # Everything ok → create booking
+        # Create booking
         new_booking = Booking(
-            customer_name=name,
-            email=email,
-            car_type=car_type,
+            customer_name="Guest",
+            email="hidden@hidden.com",
+            car_type=car.name,
             car_id=car.id,
             start_date=start_date,
             end_date=end_date
         )
+
         db.session.add(new_booking)
         db.session.commit()
-        flash("Booking successful! Check your email for confirmation (not implemented).", "success")
+
+        # Save booking info for checkout page
+        session['checkout'] = {
+            'car_type': car.name,
+            'start_date': start_date.strftime("%Y-%m-%d"),
+            'end_date': end_date.strftime("%Y-%m-%d")
+        }
+
+        flash("Booking successful! Proceed to checkout.", "success")
+        return redirect(url_for('views.checkout'))
+
+    # GET request renders the form with this car pre-selected
+    #return render_template("book.html", car_type=car.name, cars=cars)
+
+
+# Checkout page route
+# @views.route('/checkout')
+# def checkout():
+#     checkout_data = session.get('checkout')
+#
+#     # Block access if user did not come from a booking
+#     if not checkout_data:
+#         #pass in data here
+#         flash("You must book a car before accessing checkout.", "error")
+#         return redirect(url_for('views.book'))
+#
+#     return render_template(
+#         "checkoutpage.html",
+#         car_type=checkout_data['car_type'],
+#         start_date=checkout_data['start_date'],
+#         end_date=checkout_data['end_date']
+#     )
+
+@views.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    checkout_data = session.get('checkout')
+
+    # Block access if user did not come from a booking
+    if not checkout_data:
+        flash("You must book a car before accessing checkout.", "error")
+        return redirect(url_for('views.book'))
+
+    # Handle payment submission (POST)
+    if request.method == 'POST':
+        flash("Payment successful! Your booking is confirmed.", "success")
+        session.pop('checkout', None)  # Clear checkout session after payment
         return redirect(url_for('views.home'))
 
-    # GET: render the form
-    return render_template("book.html", car_type=car_type, cars=cars)
+    return render_template(
+        "checkoutpage.html",
+        car_type=checkout_data['car_type'],
+        start_date=checkout_data['start_date'],
+        end_date=checkout_data['end_date']
+    )
 
 @views.route('/browse')
 def browse():
@@ -163,5 +220,6 @@ def delete_car(car_id):
         flash("Error deleting car: " + str(e), "error")
     return redirect(url_for('views.admin'))
 
-
-
+#@views.route('/checkout')
+#def checkout():
+ #   return render_template("checkoutpage.html")

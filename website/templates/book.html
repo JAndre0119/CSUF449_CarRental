@@ -8,13 +8,13 @@
   {% if cars %}
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <form method="POST" action="{{ url_for('views.book') }}">
+      <form method="POST" id="bookingForm" action="{{ url_for('views.book_with_id', car_id=cars[0].id) }}">
         <!-- Car selection -->
         <div class="mb-3">
           <label for="car" class="form-label">Select Car</label>
-          <select id="car" name="car_name" class="form-select" required>
+          <select id="car" class="form-select" required>
             {% for car in cars %}
-            <option value="{{ car.name }}" {% if car.name == car_type %}selected{% endif %}>
+            <option value="{{ car.id }}" {% if car.name == car_type %}selected{% endif %}>
               {{ car.name }} ({{ car.make }} {{ car.model }}, {{ car.year }})
             </option>
             {% endfor %}
@@ -34,7 +34,8 @@
 
         <!-- Submit -->
         <div class="text-center">
-          <button type="submit" class="btn btn-primary w-50">Confirm Booking</button>
+
+          <button type="submit" class="btn btn-primary w-50" onclick="checkoutpage.html">Confirm Booking</button>
         </div>
       </form>
     </div>
@@ -45,4 +46,13 @@
   </div>
   {% endif %}
 </div>
+<script>
+  const carSelect = document.getElementById("car");
+  const bookingForm = document.getElementById("bookingForm");
+
+  carSelect.addEventListener("change", function () {
+    const selectedCarId = this.value;
+    bookingForm.action = `z/book/${selectedCarId}`;
+  });
+</script>
 {% endblock %}
