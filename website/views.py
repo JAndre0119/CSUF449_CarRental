@@ -81,29 +81,29 @@ def book_with_id(car_id):
         # Validate
         if not (start_date_str and end_date_str):
             flash("Please select both start and end dates.", "error")
-            return redirect(url_for('views.checkout', car_id=car_id))
+            return redirect(url_for("views.book"))
 
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
         except ValueError:
             flash("Invalid date format.", "error")
-            return redirect(url_for('views.checkout', car_id=car_id))
+            return redirect(url_for("views.book"))
 
         if end_date < start_date:
             flash("End date must be the same or after start date.", "error")
-            return redirect(url_for('views.checkout', car_id=car_id))
+            return redirect(url_for("views.book"))
 
         # Count overlapping bookings for this specific car
-        overlapping_count = Booking.query.filter(
-            Booking.car_id == car.id,
-            Booking.start_date <= end_date,
-            Booking.end_date >= start_date
-        ).count()
+       # overlapping_count = Booking.query.filter(
+         #   Booking.car_id == car.id,
+         #   Booking.start_date <= end_date,
+         #   Booking.end_date >= start_date
+        #).count()
 
-        if overlapping_count >= car.total_quantity:
-            flash(f"Sorry — {car.name} is not available for the selected dates.", "error")
-            return redirect(url_for('views.checkout', car_id=car_id))
+        #if overlapping_count >= car.total_quantity:
+        #    flash(f"Sorry — {car.name} is not available for the selected dates.", "error")
+        #    return redirect(url_for("views.ch"))
 
         # Create booking
         new_booking = Booking(
@@ -152,12 +152,12 @@ def book_with_id(car_id):
 
 @views.route('/checkout', methods=['GET', 'POST'])
 def checkout():
-    checkout_data = session.get('checkout')
+    checkout_data = session.get("checkout")
 
     # Block access if user did not come from a booking
-    if not checkout_data:
-        flash("You must book a car before accessing checkout.", "error")
-        return redirect(url_for('views.book'))
+    #if 'checkout' not in session:
+    #    flash("You must book a car before accessing checkout.", "error")
+    #    return redirect(url_for('views.book'))
 
     # Handle payment submission (POST)
     if request.method == 'POST':

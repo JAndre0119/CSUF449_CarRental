@@ -35,7 +35,7 @@
         <!-- Submit -->
         <div class="text-center">
 
-          <button type="submit" class="btn btn-primary w-50" onclick="checkoutpage.html">Confirm Booking</button>
+          <button type="submit" class="btn btn-primary w-50">Confirm Booking</button>
         </div>
       </form>
     </div>
@@ -52,7 +52,8 @@
 
   carSelect.addEventListener("change", function () {
     const selectedCarId = this.value;
-    bookingForm.action = `z/book/${selectedCarId}`;
+    bookingForm.action = `/book/${selectedCarId}`;
+    document.getElementById("car_id_hidden").value = selectedCarId;
   });
 </script>
 {% endblock %}
