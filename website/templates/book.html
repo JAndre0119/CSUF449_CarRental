@@ -12,7 +12,7 @@
         <!-- Car selection -->
         <div class="mb-3">
           <label for="car" class="form-label">Select Car</label>
-          <select id="car" class="form-select" required>
+          <select id="car" class="form-select" name="car_id" required>
             {% for car in cars %}
             <option value="{{ car.id }}" {% if car.name == car_type %}selected{% endif %}>
               {{ car.name }} ({{ car.make }} {{ car.model }}, {{ car.year }})
@@ -50,10 +50,16 @@
   const carSelect = document.getElementById("car");
   const bookingForm = document.getElementById("bookingForm");
 
+  // Update form action on PAGE LOAD
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectedCarId = carSelect.value;
+    bookingForm.action = `/book/${selectedCarId}`;
+  });
+
+  // Update form action when user CHANGES selection
   carSelect.addEventListener("change", function () {
     const selectedCarId = this.value;
     bookingForm.action = `/book/${selectedCarId}`;
-    document.getElementById("car_id_hidden").value = selectedCarId;
   });
 </script>
 {% endblock %}

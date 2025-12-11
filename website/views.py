@@ -67,10 +67,10 @@ def book():
 @views.route('/book/<int:car_id>', methods=['GET', 'POST'])
 def book_with_id(car_id):
     # Get the selected car by ID
-    car = Car.query.get_or_404(car_id)
 
     # Still load all cars for the dropdown
     cars = Car.query.order_by(Car.name).all()
+    car =Car.query.filter_by(id=car_id).first()
     car_type = car.name
 
     if request.method == 'POST':
@@ -94,7 +94,7 @@ def book_with_id(car_id):
             flash("End date must be the same or after start date.", "error")
             return redirect(url_for("views.book"))
 
-        # Count overlapping bookings for this specific car
+        # Count overlapping bookings for this specific car TODO
        # overlapping_count = Booking.query.filter(
          #   Booking.car_id == car.id,
          #   Booking.start_date <= end_date,
@@ -104,7 +104,8 @@ def book_with_id(car_id):
         #if overlapping_count >= car.total_quantity:
         #    flash(f"Sorry — {car.name} is not available for the selected dates.", "error")
         #    return redirect(url_for("views.ch"))
-
+        days = (end_date - start_date).days + 1
+        total_price = days * float(car.price_per_day)
         # Create booking
         new_booking = Booking(
             customer_name="Guest",
@@ -112,7 +113,7 @@ def book_with_id(car_id):
             car_type=car.name,
             car_id=car.id,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
         )
 
         db.session.add(new_booking)
@@ -122,14 +123,15 @@ def book_with_id(car_id):
         session['checkout'] = {
             'car_type': car.name,
             'start_date': start_date.strftime("%Y-%m-%d"),
-            'end_date': end_date.strftime("%Y-%m-%d")
+            'end_date': end_date.strftime("%Y-%m-%d"),
+            'total_price': total_price
         }
 
         flash("Booking successful! Proceed to checkout.", "success")
         return redirect(url_for('views.checkout'))
 
     # GET request renders the form with this car pre-selected
-    #return render_template("book.html", car_type=car.name, cars=cars)
+    return render_template("book.html", car_type=car.name, cars=cars,car_id = car.id)
 
 
 # Checkout page route
@@ -169,7 +171,8 @@ def checkout():
         "checkoutpage.html",
         car_type=checkout_data['car_type'],
         start_date=checkout_data['start_date'],
-        end_date=checkout_data['end_date']
+        end_date=checkout_data['end_date'],
+        total_price=checkout_data['total_price']
     )
 
 @views.route('/browse')
