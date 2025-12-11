@@ -8,13 +8,13 @@
   {% if cars %}
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <form method="POST" action="{{ url_for('views.book') }}">
+      <form method="POST" id="bookingForm" action="{{ url_for('views.book_with_id', car_id=cars[0].id) }}">
         <!-- Car selection -->
         <div class="mb-3">
           <label for="car" class="form-label">Select Car</label>
-          <select id="car" name="car_name" class="form-select" required>
+          <select id="car" class="form-select" name="car_id" required>
             {% for car in cars %}
-            <option value="{{ car.name }}" {% if car.name == car_type %}selected{% endif %}>
+            <option value="{{ car.id }}" {% if car.name == car_type %}selected{% endif %}>
               {{ car.name }} ({{ car.make }} {{ car.model }}, {{ car.year }})
             </option>
             {% endfor %}
@@ -34,6 +34,7 @@
 
         <!-- Submit -->
         <div class="text-center">
+
           <button type="submit" class="btn btn-primary w-50">Confirm Booking</button>
         </div>
       </form>
@@ -45,4 +46,20 @@
   </div>
   {% endif %}
 </div>
+<script>
+  const carSelect = document.getElementById("car");
+  const bookingForm = document.getElementById("bookingForm");
+
+  // Update form action on PAGE LOAD
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectedCarId = carSelect.value;
+    bookingForm.action = `/book/${selectedCarId}`;
+  });
+
+  // Update form action when user CHANGES selection
+  carSelect.addEventListener("change", function () {
+    const selectedCarId = this.value;
+    bookingForm.action = `/book/${selectedCarId}`;
+  });
+</script>
 {% endblock %}

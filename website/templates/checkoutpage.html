@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <!-- Title -->
+      <h1 class="fw-bold text-center mb-4">Checkout</h1>
+
+      <!-- Card Container -->
+      <div class="card shadow p-4">
+
+        <!-- Booking Summary -->
+        <h4 class="fw-semibold mb-3">Booking Summary</h4>
+        <div class="border rounded p-3 mb-4 bg-light">
+          <p class="mb-1"><strong>Car:</strong> {{ car_type }}</p>
+          <p class="mb-1"><strong>Start Date:</strong> {{ start_date }}</p>
+          <p class="mb-1"><strong>End Date:</strong> {{ end_date }}</p>
+           <p class="mb-1"><strong> Total :</strong> {{ total_price }}</p>
+        </div>
+
+        <hr>
+
+        <!-- Payment Form -->
+        <form method="POST" action="{{ url_for('views.checkout') }}">
+          <h4 class="fw-semibold mb-3">Payment Information</h4>
+
+          <div class="row">
+            <!-- Card Number -->
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Credit Card Number</label>
+              <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" required>
+            </div>
+
+            <!-- Exp + CVV -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Expiration Date</label>
+              <input type="text" name="exp" class="form-control" placeholder="MM/YY" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">CVV</label>
+              <input type="text" name="cvv" class="form-control" placeholder="123" required>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-success w-100 py-2 fs-5">
+            Submit Payment
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
