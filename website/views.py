@@ -183,6 +183,7 @@ def browse():
 @views.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
+        car_id = request.form.get('car_id')
         name = request.form.get('name', '').strip()
         make = request.form.get('make', '').strip()
         model = request.form.get('model', '').strip()
@@ -193,7 +194,25 @@ def admin():
 
         if not name:
             flash("Car name is required.", "error")
-        else:
+            return redirect(url_for('views.admin'))
+
+        if car_id:  # Edit existing car
+            car = Car.query.get(car_id)
+            if not car:
+                flash("Car not found.", "error")
+                return redirect(url_for('views.admin'))
+
+            car.name = name
+            car.make = make
+            car.model = model
+            car.year = int(year) if year else None
+            car.price_per_day = float(price_per_day) if price_per_day else 0.0
+            car.total_quantity = int(total_quantity) if total_quantity else 1
+            car.image_filename = image_filename or car.image_filename or "default.jpg"
+
+            db.session.commit()
+            flash(f"Car '{name}' updated successfully!", "success")
+        else:  # Add new car
             new_car = Car(
                 name=name,
                 make=make,
@@ -206,7 +225,16 @@ def admin():
             db.session.add(new_car)
             db.session.commit()
             flash(f"Car '{name}' added successfully!", "success")
+
         return redirect(url_for('views.admin'))
+
+    # Check if editing an existing car
+    edit_car_id = request.args.get('edit')
+    car_to_edit = Car.query.get(edit_car_id) if edit_car_id else None
+
+    cars = Car.query.order_by(Car.name).all()
+    return render_template("admin.html", cars=cars, car_to_edit=car_to_edit)
+
 
     cars = Car.query.order_by(Car.name).all()
     return render_template("admin.html", cars=cars)
