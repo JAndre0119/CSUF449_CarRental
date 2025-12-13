@@ -22,6 +22,8 @@ def login():
 
         login_user(user)
         flash("Logged in successfully!", "success")
+        if user.is_admin:
+            return redirect(url_for("views.admin"))
         return redirect(url_for("views.home"))
 
     return render_template("login.html")
@@ -65,3 +67,4 @@ def logout():
     logout_user()
     flash("Logged out.", "success")
     return redirect(url_for("views.home"))
+
