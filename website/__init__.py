@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_mail import Mail
+from flask_login import LoginManager
 
 db = SQLAlchemy()
 mail = Mail()
@@ -25,6 +26,19 @@ def create_app():
 
     from .views import views
     app.register_blueprint(views, url_prefix="/")
+
+    from .models import User
+
+    login_manager = LoginManager()
+    login_manager.login_view = "auth.login"  # Redirect users who aren't logged in
+    login_manager.init_app(app)
+
+    from .auth import auth 
+    app.register_blueprint(auth)
+
+    @login_manager.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
 
     create_database(app)
 

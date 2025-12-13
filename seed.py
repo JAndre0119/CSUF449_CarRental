@@ -1,5 +1,7 @@
 ﻿from website import create_app, db
 from website.models import Car
+from website.models import User
+from werkzeug.security import generate_password_hash
 
 app = create_app()
 
@@ -60,6 +62,14 @@ with app.app_context():
     ]
 
     db.session.add_all(cars)
+    
+    admin = User(
+    email="admin@carrental.com",
+    password_hash=generate_password_hash("admin123"),
+    is_admin=True
+    )
+    db.session.add(admin)
     db.session.commit()
 
     print("Seeded 30 cars with placeholder.jpg!")
+
